@@ -8,7 +8,7 @@ import 'package:chat_app/components/button/button_elevated.dart';
 import 'package:chat_app/components/td_app_bar.dart';
 import 'package:chat_app/gen/assets.gen.dart';
 import 'package:chat_app/models/user__model.dart';
-import 'package:chat_app/pages/widgets/chatslist.dart';
+import 'package:chat_app/pages/chat/chatslist.dart';
 import 'package:chat_app/profile/profile_your.dart';
 import 'package:chat_app/resources/app_color.dart';
 import 'package:flutter/material.dart';

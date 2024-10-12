@@ -1,7 +1,7 @@
 import 'package:chat_app/components/appbarpage/chat_appbar.dart';
 import 'package:chat_app/components/text__flied/text__filed.dart';
 import 'package:chat_app/gen/assets.gen.dart';
-import 'package:chat_app/pages/widgets/chatitem.dart';
+import 'package:chat_app/pages/chat/chatitem.dart';
 import 'package:chat_app/resources/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

@@ -1,6 +1,6 @@
 import 'package:chat_app/gen/assets.gen.dart';
 import 'package:chat_app/pages/chat/chatpage.dart';
-import 'package:chat_app/pages/widgets/chattile.dart';
+import 'package:chat_app/pages/chat/chattile.dart';
 import 'package:flutter/material.dart';
 
 class ChatList extends StatelessWidget {
