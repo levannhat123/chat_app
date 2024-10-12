@@ -100,7 +100,6 @@ class _ProfileYourState extends State<ProfileYour> {
                                               ? Image.network(
                                                   imgurl!,
                                                   fit: BoxFit.cover,
-                                                  
                                                 )
                                               : Image.file(
                                                   File(
@@ -183,10 +182,11 @@ class _ProfileYourState extends State<ProfileYour> {
                               text: "Save",
                               onPressed: () async {
                                 await AuthController().UpdateProfile(
-                                    imgurl ??
-                                        'https://your-placeholder-image-url.com',
-                                    nameController.text,
-                                    phoneController.text);
+                                  imgurl ??
+                                      'https://your-placeholder-image-url.com',
+                                  nameController.text,
+                                  phoneController.text,
+                                );
                               },
                             )
                           ],

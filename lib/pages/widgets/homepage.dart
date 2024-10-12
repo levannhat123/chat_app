@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:chat_app/auth/auth_controller.dart';
@@ -39,6 +40,7 @@ class _HomePageState extends State<HomePage>
     currentUser = await AuthController().getCurrentUser();
     setState(() {
       imgurl = currentUser!.img ?? "";
+      print("Image URL: $imgurl"); // In giá trị của imgurl
     });
   }
 
@@ -64,75 +66,73 @@ class _HomePageState extends State<HomePage>
             top: MediaQuery.of(context).padding.top + 6.0, bottom: 12.0),
         child: Drawer(
           backgroundColor: AppColor.bgColor,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      if (picker.image != null) {
-                        setState(() {
-                          imgurl = picker.imgUrl;
-                          print(imgurl);
-                        });
-                      }
-                    },
-                    child: ClipOval(
-                      child: (imgurl != null && imgurl!.startsWith('http'))
-                          ? Image.network(
-                              imgurl!,
-                              fit: BoxFit.cover,
-                              width: 100, // Đặt kích thước tùy ý
-                              height: 100,
-                            )
-                          : (imgurl != null)
-                              ? Image.file(
-                                  File(imgurl!),
-                                  fit: BoxFit.cover,
-                                  width: 100, // Đặt kích thước tùy ý
-                                  height: 100,
-                                )
-                              : Icon(Icons
-                                  .image), // Biểu tượng mặc định khi imgurl là null
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      // padding: EdgeInsets.all(50),
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: AppColor.red,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: imgurl == null || imgurl!.isEmpty
+                          ? Icon(Icons.image)
+                          : ClipOval(
+                              child: imgurl!.startsWith('http')
+                                  ? Image.network(
+                                      imgurl!,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.file(
+                                      File(
+                                          imgurl!), // Sử dụng Image.file cho ảnh cục bộ
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const ProfileYour(),
-                      ));
-                      await loadUserData();
-                    },
-                    child: Icon(Icons.edit),
-                  )
-                ],
-              ),
-              currentUser != null
-                  ? Column(
-                      children: [
-                        Text(currentUser!.name ?? "",
-                            style: TextStyle(fontSize: 18)),
-                        Text(currentUser!.email ?? "",
-                            style: TextStyle(fontSize: 14)),
-                      ],
+                    GestureDetector(
+                      onTap: () async {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const ProfileYour(),
+                        ));
+                        // await loadUserData();
+                      },
+                      child: Icon(Icons.edit),
                     )
-                  : CircularProgressIndicator(),
-              Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
-                child: CappElevatedButton(
-                  text: 'Logout',
-                  onPressed: () async {
-                    try {
-                      await AuthController().logout();
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => LoginPage(),
-                      ));
-                    } catch (e) {}
-                  },
+                  ],
                 ),
-              )
-            ],
+                currentUser != null
+                    ? Column(
+                        children: [
+                          Text(currentUser!.name ?? "",
+                              style: TextStyle(fontSize: 18)),
+                          Text(currentUser!.email ?? "",
+                              style: TextStyle(fontSize: 14)),
+                        ],
+                      )
+                    : CircularProgressIndicator(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  child: CappElevatedButton(
+                    text: 'Logout',
+                    onPressed: () async {
+                      try {
+                        await AuthController().logout();
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => LoginPage(),
+                        ));
+                      } catch (e) {}
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

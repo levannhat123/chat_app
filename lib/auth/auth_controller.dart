@@ -45,8 +45,11 @@ class AuthController {
   }
 
   Future<void> initUser(String email, String name) async {
-    var newUser =
-        UserModel(email: email, name: name, id: _auth.currentUser!.uid);
+    var newUser = UserModel(
+      email: email,
+      name: name,
+      id: _auth.currentUser!.uid,
+    );
     try {
       await db
           .collection("users")
@@ -76,12 +79,21 @@ class AuthController {
       String imageUrl, String name, String number) async {
     isLoading = true;
     try {
-      final imgLink = await UpdateFileProfile(imageUrl);
-      final updateUser = UserModel(name: name, phone: number, img: imgLink);
+      final imgLink = imageUrl.startsWith('http')
+          ? imageUrl
+          : await UpdateFileProfile(imageUrl);
+      final updateUser = UserModel(
+          name: name,
+          phone: number,
+          img: imgLink,
+          id: _auth.currentUser!.uid,
+          email: _auth.currentUser!.email);
+
+      // Dùng update thay vì set để tránh ghi đè dữ liệu khác
       await db
           .collection("users")
           .doc(_auth.currentUser!.uid)
-          .set(updateUser.toJson());
+          .update(updateUser.toJson());
     } catch (e) {
       print(e);
     }
@@ -89,20 +101,22 @@ class AuthController {
   }
 
   Future<String> UpdateFileProfile(String imageUrl) async {
-    final path = "files/${imageUrl}";
-    final file = File(imageUrl!);
-    if (imageUrl != "") {
+    final path =
+        "files/${_auth.currentUser!.uid}/profile_image"; // Đảm bảo đường dẫn duy nhất cho mỗi người dùng
+    final file = File(imageUrl);
+
+    if (imageUrl.isNotEmpty) {
       try {
         final ref = store.ref().child(path).putFile(file);
         final upload = await ref.whenComplete(() => {});
-        final dowload = await upload.ref.getDownloadURL();
-        print(dowload);
-        return dowload;
+        final downloadUrl = await upload.ref.getDownloadURL();
+        print(downloadUrl);
+        return downloadUrl; // Trả về URL mới
       } catch (e) {
         print(e);
         return '';
       }
     }
-    return "";
+    return '';
   }
 }
