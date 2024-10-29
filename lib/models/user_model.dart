@@ -1,3 +1,4 @@
+import 'package:chat_app/gen/assets.gen.dart';
 
 class UserModel {
   String? id;
@@ -12,7 +13,7 @@ class UserModel {
     id = json["id"];
     name = json["name"];
     email = json["email"];
-    img = json["img"];
+    img = json["img"] ?? Assets.img.avatar.path;
     phone = json["phone"];
   }
 
@@ -21,7 +22,7 @@ class UserModel {
     _data["id"] = id;
     _data["name"] = name;
     _data["email"] = email;
-    _data["img"] = img;
+    _data["img"] = img ?? Assets.img.avatar.path;
     _data["phone"] = phone;
     return _data;
   }

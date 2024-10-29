@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:chat_app/auth/login_page.dart';
 import 'package:chat_app/gen/assets.gen.dart';
 import 'package:chat_app/pages/onloading/onloading_page.dart';
 import 'package:flutter/material.dart';

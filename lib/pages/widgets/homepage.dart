@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:chat_app/auth/auth_controller.dart';
@@ -7,8 +6,9 @@ import 'package:chat_app/auth/login_page.dart';
 import 'package:chat_app/components/button/button_elevated.dart';
 import 'package:chat_app/components/td_app_bar.dart';
 import 'package:chat_app/gen/assets.gen.dart';
-import 'package:chat_app/models/user__model.dart';
+import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/pages/chat/chatslist.dart';
+import 'package:chat_app/pages/contact/contactpage.dart';
 import 'package:chat_app/profile/profile_your.dart';
 import 'package:chat_app/resources/app_color.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 3, vsync: this);
+    tabController = TabController(length: 1, vsync: this);
     loadUserData();
   }
 
@@ -40,7 +40,6 @@ class _HomePageState extends State<HomePage>
     currentUser = await AuthController().getCurrentUser();
     setState(() {
       imgurl = currentUser!.img ?? "";
-      print("Image URL: $imgurl"); // In giá trị của imgurl
     });
   }
 
@@ -52,6 +51,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    AuthController authController = AuthController();
     return Scaffold(
       key: _scaffoldKey,
       appBar: TdAppBar(
@@ -60,6 +60,9 @@ class _HomePageState extends State<HomePage>
           _scaffoldKey.currentState?.openDrawer();
         },
         tabController: tabController,
+        rightPressed: () async {
+          await AuthController().getRoomList();
+        },
       ),
       drawer: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0).copyWith(
@@ -82,7 +85,7 @@ class _HomePageState extends State<HomePage>
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child: imgurl == null || imgurl!.isEmpty
-                          ? Icon(Icons.image)
+                          ? Image.asset(Assets.img.defaultAvatar.path)
                           : ClipOval(
                               child: imgurl!.startsWith('http')
                                   ? Image.network(
@@ -103,7 +106,7 @@ class _HomePageState extends State<HomePage>
                         ));
                         // await loadUserData();
                       },
-                      child: Icon(Icons.edit),
+                      child: const Icon(Icons.edit),
                     )
                   ],
                 ),
@@ -111,12 +114,12 @@ class _HomePageState extends State<HomePage>
                     ? Column(
                         children: [
                           Text(currentUser!.name ?? "",
-                              style: TextStyle(fontSize: 18)),
+                              style: const TextStyle(fontSize: 18)),
                           Text(currentUser!.email ?? "",
-                              style: TextStyle(fontSize: 14)),
+                              style: const TextStyle(fontSize: 14)),
                         ],
                       )
-                    : CircularProgressIndicator(),
+                    : const CircularProgressIndicator(),
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
                   child: CappElevatedButton(
@@ -125,9 +128,11 @@ class _HomePageState extends State<HomePage>
                       try {
                         await AuthController().logout();
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => LoginPage(),
+                          builder: (context) => const LoginPage(),
                         ));
-                      } catch (e) {}
+                      } catch (e) {
+                        throw Exception(e.toString());
+                      }
                     },
                   ),
                 )
@@ -137,9 +142,13 @@ class _HomePageState extends State<HomePage>
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ContactPage(),
+          ));
+        },
         backgroundColor: AppColor.bgColor,
-        child: Icon(
+        child: const Icon(
           Icons.add,
           color: AppColor.black,
         ),
@@ -147,13 +156,7 @@ class _HomePageState extends State<HomePage>
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: TabBarView(controller: tabController, children: [
-          ChatList(),
-          ListView(
-            children: [Text('a')],
-          ),
-          ListView(
-            children: [Text('b')],
-          )
+          const ChatList(),
         ]),
       ),
     );

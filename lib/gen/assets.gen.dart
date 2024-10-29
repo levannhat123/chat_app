@@ -15,6 +15,10 @@ class $AssetsImgGen {
   /// File path: assets/img/avatar.jpg
   AssetGenImage get avatar => const AssetGenImage('assets/img/avatar.jpg');
 
+  /// File path: assets/img/default_avatar.png
+  AssetGenImage get defaultAvatar =>
+      const AssetGenImage('assets/img/default_avatar.png');
+
   /// File path: assets/img/intro1.jpg
   AssetGenImage get intro1 => const AssetGenImage('assets/img/intro1.jpg');
 
@@ -37,8 +41,17 @@ class $AssetsImgGen {
   AssetGenImage get splahs => const AssetGenImage('assets/img/splahs.png');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [avatar, intro1, intro3, intro4, login, logo, register, splahs];
+  List<AssetGenImage> get values => [
+        avatar,
+        defaultAvatar,
+        intro1,
+        intro3,
+        intro4,
+        login,
+        logo,
+        register,
+        splahs
+      ];
 }
 
 class Assets {

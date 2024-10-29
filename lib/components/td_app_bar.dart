@@ -39,7 +39,7 @@ class TdAppBar extends StatelessWidget implements PreferredSizeWidget {
                 BoxShadow(
                   color: AppColor.shadow,
                   offset: Offset(3.0, 3.0),
-                  blurRadius: 4.6,   
+                  blurRadius: 4.6,
                   // hello
                 ),
               ],
@@ -58,23 +58,23 @@ class TdAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: const Icon(Icons.edit),
         ),
       ],
-      bottom: PreferredSize(
-        preferredSize: Size.fromHeight(60),
-        child: TabBar(
-            controller: tabController,
-            labelStyle: Theme.of(context).textTheme.bodyLarge,
-            unselectedLabelStyle: Theme.of(context).textTheme.labelLarge,
-            indicatorColor: AppColor.grey,
-            indicatorWeight: 4,
-            tabs: const [
-              Text('Chats'),
-              Text('Groups'),
-              Text('Calls'),
-            ]),
-      ),
+      // bottom: PreferredSize(
+      //   preferredSize: Size.fromHeight(60),
+      //   // child: TabBar(
+      //   //     controller: tabController,
+      //   //     labelStyle: Theme.of(context).textTheme.bodyLarge,
+      //   //     unselectedLabelStyle: Theme.of(context).textTheme.labelLarge,
+      //   //     indicatorColor: AppColor.grey,
+      //   //     indicatorWeight: 4,
+      //   //     tabs: const [
+      //   //       Text('Chats'),
+      //   //       // Text('Groups'),
+      //   //       // Text('Calls'),
+      //   //     ]),
+      // ),
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(110.0);
+  Size get preferredSize => const Size.fromHeight(86.0);
 }

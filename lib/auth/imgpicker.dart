@@ -13,7 +13,7 @@ class ImgPicker {
     );
     if (pickedFile != null) {
       image = File(pickedFile.path);
-      imgUrl = pickedFile.path; // Lưu URL của ảnh vào biến imgUrl
+      imgUrl = pickedFile.path; 
     } else {
       print("No image selected");
     }

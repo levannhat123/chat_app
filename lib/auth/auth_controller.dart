@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:chat_app/models/user__model.dart';
+import 'package:chat_app/models/chat_roomModel.dart';
+import 'package:chat_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,6 +11,9 @@ class AuthController {
   final db = FirebaseFirestore.instance;
   final store = FirebaseStorage.instance;
   bool isLoading = false;
+  List<UserModel> userList = [];
+  List<UserModel> searchList = [];
+  List<ChatRoomModel> chatRoom = [];
   Future<void> login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(
@@ -88,8 +92,6 @@ class AuthController {
           img: imgLink,
           id: _auth.currentUser!.uid,
           email: _auth.currentUser!.email);
-
-      // Dùng update thay vì set để tránh ghi đè dữ liệu khác
       await db
           .collection("users")
           .doc(_auth.currentUser!.uid)
@@ -118,5 +120,36 @@ class AuthController {
       }
     }
     return '';
+  }
+
+  Future<void> getUserList() async {
+    isLoading = true;
+    try {
+      await db.collection("users").get().then(
+            (value) => {
+              userList =
+                  value.docs.map((e) => UserModel.fromJson(e.data())).toList(),
+              searchList = [...userList],
+            },
+
+            // setState(() {});
+          );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> getRoomList() async {
+    List<ChatRoomModel> temRoomList = [];
+    await db
+        .collection('chats')
+        .orderBy('timestamp', descending: true)
+        .get()
+        .then((value) => temRoomList =
+            value.docs.map((e) => ChatRoomModel.fromJson(e.data())).toList());
+    chatRoom = temRoomList
+        .where((element) => element.id!.contains(_auth.currentUser!.uid))
+        .toList();
+    print(chatRoom);
   }
 }

@@ -1,46 +1,48 @@
-import 'dart:io';
 
 import 'package:chat_app/auth/auth_controller.dart';
 import 'package:chat_app/auth/imgpicker.dart';
 import 'package:chat_app/components/appbarpage/chat_appbar.dart';
-import 'package:chat_app/components/button/button_elevated.dart';
 import 'package:chat_app/components/text__flied/text__filed.dart';
 import 'package:chat_app/gen/assets.gen.dart';
 import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/resources/app_color.dart';
 import 'package:flutter/material.dart';
 
-class ProfileYour extends StatefulWidget {
-  const ProfileYour({super.key});
-
+class ProfileUser extends StatefulWidget {
+  const ProfileUser({super.key, required this.userModel});
+  final UserModel userModel;
   @override
-  State<ProfileYour> createState() => _ProfileYourState();
+  State<ProfileUser> createState() => _ProfileUserState();
 }
 
-UserModel? currentUser;
+class _ProfileUserState extends State<ProfileUser> {
+  final AuthController authController = AuthController();
 
-class _ProfileYourState extends State<ProfileYour> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  Future<void> loadUserData() async {
-    currentUser = await AuthController().getCurrentUser();
-    if (currentUser != null) {
-      setState(() {
-        nameController.text = currentUser!.name ?? "";
-        emailController.text = currentUser!.email ?? "";
-        phoneController.text = currentUser!.phone ?? '';
-        imgurl = currentUser!.img ?? ''; // Lấy URL ảnh
-      });
-    }
-  }
 
   ImgPicker picker = ImgPicker();
   String? imgurl;
+
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
     loadUserData();
+  }
+
+  void loadUserData() {
+    setState(() {
+      nameController.text =
+          widget.userModel.name ?? ''; // Sử dụng roomModel để lấy tên
+      emailController.text =
+          widget.userModel.email ?? ''; // Cần đảm bảo roomModel có email
+      phoneController.text = widget.userModel.phone ??
+          ''; // Cần đảm bảo roomModel có số điện thoại
+      imgurl = widget.userModel.img ??
+          Assets.img.avatar.path; // Cần đảm bảo roomModel có ảnh
+    });
   }
 
   @override
@@ -53,7 +55,7 @@ class _ProfileYourState extends State<ProfileYour> {
               Navigator.pop(context);
             },
           ),
-          title: "Update Profile",
+          title: "Profile ${widget.userModel.name}",
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -61,7 +63,7 @@ class _ProfileYourState extends State<ProfileYour> {
             child: Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: AppColor.bgColor),
@@ -72,14 +74,14 @@ class _ProfileYourState extends State<ProfileYour> {
                           children: [
                             GestureDetector(
                                 onTap: () async {
-                                  await picker.getImage();
+                                  // await picker.getImage();
 
-                                  if (picker.image != null) {
-                                    setState(() {
-                                      imgurl = picker.imgUrl;
-                                      print(imgurl);
-                                    });
-                                  }
+                                  // if (picker.image != null) {
+                                  //   setState(() {
+                                  //     imgurl = picker.imgUrl;
+                                  //     print(imgurl);
+                                  //   });
+                                  // }
                                 },
                                 child: Container(
                                   height: 200,
@@ -96,9 +98,8 @@ class _ProfileYourState extends State<ProfileYour> {
                                                   imgurl!,
                                                   fit: BoxFit.cover,
                                                 )
-                                              : Image.file(
-                                                  File(
-                                                      imgurl!), // Sử dụng Image.file cho ảnh cục bộ
+                                              : Image.asset(
+                                                  Assets.img.avatar.path,
                                                   fit: BoxFit.cover,
                                                 ),
                                         ),
@@ -122,6 +123,7 @@ class _ProfileYourState extends State<ProfileYour> {
                                   hintText: "Name",
                                   controller: nameController,
                                   prefixIcon: Icon(Icons.person),
+                                  readOnly: true,
                                 ),
                                 SizedBox(
                                   height: 10,
@@ -167,22 +169,24 @@ class _ProfileYourState extends State<ProfileYour> {
                                   prefixIcon: Icon(Icons.phone),
                                   hintText: "0815105572",
                                   controller: phoneController,
+                                  readOnly: true,
                                 ),
                                 SizedBox(
                                   height: 10,
                                 ),
                               ],
                             ),
-                            CappElevatedButton(
-                              text: "Save",
-                              onPressed: () async {
-                                await AuthController().UpdateProfile(
-                                  imgurl ?? Assets.img.avatar.path,
-                                  nameController.text,
-                                  phoneController.text,
-                                );
-                              },
-                            )
+                            // CappElevatedButton(
+                            //   text: "Save",
+                            //   onPressed: () async {
+                            //     await AuthController().UpdateProfile(
+                            //       imgurl ??
+                            //           'https://your-placeholder-image-url.com',
+                            //       nameController.text,
+                            //       phoneController.text,
+                            //     );
+                            //   },
+                            // )
                           ],
                         ),
                       ),

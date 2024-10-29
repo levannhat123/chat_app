@@ -1,8 +1,7 @@
-import 'package:chat_app/gen/assets.gen.dart';
 import 'package:chat_app/resources/app_color.dart';
 import 'package:flutter/material.dart';
 
-class ChatItem extends StatelessWidget {
+class ChatItem extends StatefulWidget {
   const ChatItem(
       {super.key,
       required this.message,
@@ -15,47 +14,58 @@ class ChatItem extends StatelessWidget {
   final String time;
   final String? imgUrl;
   final String status;
+
+  @override
+  State<ChatItem> createState() => _ChatItemState();
+}
+
+class _ChatItemState extends State<ChatItem> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: Column(
-        crossAxisAlignment:
-            isComming ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+        crossAxisAlignment: widget.isComming
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.end,
         children: [
           Container(
-            padding: EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(10.0),
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.sizeOf(context).width / 1.4),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 color: AppColor.bgColor,
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            child: imgUrl == ''
-                ? Text(message)
+            child: widget.imgUrl == ''
+                ? Text(widget.message)
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Image.asset(imgUrl!), Text(message)],
+                    children: [
+                      Image.asset(widget.imgUrl!),
+                      Text(widget.message)
+                    ],
                   ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 5.0,
           ),
           Row(
-            mainAxisAlignment:
-                isComming ? MainAxisAlignment.start : MainAxisAlignment.end,
+            mainAxisAlignment: widget.isComming
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.end,
             children: [
-              isComming
+              widget.isComming
                   ? Text(
-                      time,
-                      style: TextStyle(color: AppColor.grey),
+                      widget.time,
+                      style: const TextStyle(color: AppColor.grey),
                     )
                   : Row(
                       children: [
                         Text(
-                          time,
-                          style: TextStyle(color: AppColor.grey),
+                          widget.time,
+                          style: const TextStyle(color: AppColor.grey),
                         ),
-                        Icon(
+                        const Icon(
                           Icons.check,
                           color: AppColor.grey,
                         )
