@@ -61,8 +61,6 @@ class ChatPage extends StatelessWidget {
                 child: Text('No Message'),
               );
             } else {
-              // In ra tất cả các messages
-
               return ListView.builder(
                 reverse: true,
                 itemCount: snapshot.data!.length,
@@ -70,13 +68,17 @@ class ChatPage extends StatelessWidget {
                   DateTime time =
                       DateTime.parse(snapshot.data![index].timestamp!);
                   String format = DateFormat('hh:mm a').format(time);
-                  print(format);
-                  return ChatItem(
-                    message: snapshot.data![index].message!,
-                    isComming: snapshot.data![index].senderId == userModel.id,
-                    time: format,
-                    status: 'read',
-                    imgUrl: '',
+                  return GestureDetector(
+                    onLongPressStart: (details) {
+                 
+                    },
+                    child: ChatItem(
+                      message: snapshot.data![index].message!,
+                      isComming: snapshot.data![index].senderId == userModel.id,
+                      time: format,
+                      status: 'read',
+                      imgUrl: '',
+                    ),
                   );
                 },
               );

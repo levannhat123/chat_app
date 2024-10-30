@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:chat_app/auth/auth_controller.dart';
 import 'package:chat_app/auth/imgpicker.dart';
 import 'package:chat_app/auth/login_page.dart';
 import 'package:chat_app/components/button/button_elevated.dart';
-import 'package:chat_app/components/td_app_bar.dart';
+import 'package:chat_app/components/appbarpage/td_app_bar.dart';
 import 'package:chat_app/gen/assets.gen.dart';
 import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/pages/chat/chatslist.dart';
@@ -60,82 +58,129 @@ class _HomePageState extends State<HomePage>
           _scaffoldKey.currentState?.openDrawer();
         },
         tabController: tabController,
-        rightPressed: () async {
-          await AuthController().getRoomList();
-        },
       ),
       drawer: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0).copyWith(
-            top: MediaQuery.of(context).padding.top + 6.0, bottom: 12.0),
+        padding: EdgeInsets.symmetric(horizontal: 0).copyWith(
+          top: MediaQuery.of(context).padding.top + 6.0,
+          bottom: 12.0,
+        ),
         child: Drawer(
           backgroundColor: AppColor.bgColor,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      // padding: EdgeInsets.all(50),
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: AppColor.red,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: imgurl == null || imgurl!.isEmpty
-                          ? Image.asset(Assets.img.defaultAvatar.path)
-                          : ClipOval(
-                              child: imgurl!.startsWith('http')
-                                  ? Image.network(
-                                      imgurl!,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.file(
-                                      File(
-                                          imgurl!), // Sử dụng Image.file cho ảnh cục bộ
-                                      fit: BoxFit.cover,
-                                    ),
-                            ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const ProfileYour(),
-                        ));
-                        // await loadUserData();
-                      },
-                      child: const Icon(Icons.edit),
-                    )
-                  ],
-                ),
-                currentUser != null
-                    ? Column(
+                // Profile section
+                Container(
+                  // color: AppColor.bgColor, // Màu nền cho phần Profile
+                  padding: const EdgeInsets.symmetric(vertical: 30.0),
+                  child: Column(
+                    children: [
+                      // Avatar với viền đẹp mắt
+                      Stack(
+                        alignment: Alignment.center,
                         children: [
-                          Text(currentUser!.name ?? "",
-                              style: const TextStyle(fontSize: 18)),
-                          Text(currentUser!.email ?? "",
-                              style: const TextStyle(fontSize: 14)),
+                          Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(60),
+                              border: Border.all(
+                                  color: Color.fromARGB(255, 28, 184, 236),
+                                  width: 3),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 15,
+                                  offset: const Offset(0, 5),
+                                ),
+                              ],
+                            ),
+                            child: ClipOval(
+                              child: imgurl == null || imgurl!.isEmpty
+                                  ? Image.asset(Assets.img.defaultAvatar.path,
+                                      fit: BoxFit.cover)
+                                  : (imgurl!.startsWith('http')
+                                      ? Image.network(imgurl!,
+                                          fit: BoxFit.cover)
+                                      : Image.asset(Assets.img.avatar.path,
+                                          fit: BoxFit.cover)),
+                            ),
+                          ),
+                          // Icon chỉnh sửa
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () async {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ProfileYour()),
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(6.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(Icons.edit,
+                                    size: 20, color: AppColor.black),
+                              ),
+                            ),
+                          ),
                         ],
-                      )
-                    : const CircularProgressIndicator(),
+                      ),
+                      const SizedBox(height: 20),
+                      // Thông tin người dùng
+                      if (currentUser != null) ...[
+                        Text(
+                          "Name: ${currentUser!.name ?? "Unknown User"}",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Email: ${currentUser!.email ?? "No email available"}",
+                          style:
+                              TextStyle(fontSize: 14, color: Colors.grey[600]),
+                        ),
+                      ] else
+                        const CircularProgressIndicator(),
+                    ],
+                  ),
+                ),
+                // Divider
+                // Nút logout
                 Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: CappElevatedButton(
                     text: 'Logout',
                     onPressed: () async {
                       try {
                         await AuthController().logout();
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
-                        ));
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
+                        );
                       } catch (e) {
                         throw Exception(e.toString());
                       }
                     },
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -155,9 +200,7 @@ class _HomePageState extends State<HomePage>
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: TabBarView(controller: tabController, children: [
-          const ChatList(),
-        ]),
+        child: ChatList(currentUser: currentUser),
       ),
     );
   }

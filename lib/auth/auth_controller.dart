@@ -16,30 +16,52 @@ class AuthController {
   List<ChatRoomModel> chatRoom = [];
   Future<void> login(String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(
+      final userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      print('Đăng nhập thành công');
+      if (userCredential.user != null) {
+        print('Đăng nhập thành công');
+      }
     } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw Exception('Email không tồn tại. Vui lòng kiểm tra lại.');
+      } else if (e.code == 'wrong-password') {
+        throw Exception('Mật khẩu không chính xác. Vui lòng thử lại.');
+      } else {
+        throw Exception('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+      }
     } catch (e) {
-      // Trả về thông điệp lỗi chung
       throw Exception('Đã xảy ra lỗi. Vui lòng thử lại sau.');
     }
   }
 
   Future<void> createUser(String email, String password, String name) async {
     try {
+      await db.disableNetwork();
+      final userSnapshot =
+          await db.collection("users").where("email", isEqualTo: email).get();
+      await db.enableNetwork();
+
+      // Kiểm tra nếu email đã tồn tại
+      if (userSnapshot.docs.isNotEmpty) {
+        throw FirebaseAuthException(
+            code: "email-already-in-use", message: "Email đã tồn tại");
+      }
+
+      // Tạo người dùng Firebase Auth
       await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+
+      // Khởi tạo thông tin người dùng Firestore
       await initUser(email, name);
       print('Tạo tài khoản thành công');
     } on FirebaseAuthException catch (e) {
-      // Trả về mã lỗi để xử lý trong UI
+      print("Lỗi FirebaseAuth: ${e.message}");
+      throw Exception(e.message ?? 'Đăng ký thất bại');
     } catch (e) {
-      // Trả về thông điệp lỗi chung
       throw Exception('Đã xảy ra lỗi. Vui lòng thử lại sau.');
     }
   }
@@ -139,17 +161,17 @@ class AuthController {
     }
   }
 
-  Future<void> getRoomList() async {
-    List<ChatRoomModel> temRoomList = [];
-    await db
+  Stream<List<ChatRoomModel>> getRoomListStream() {
+    return db
         .collection('chats')
         .orderBy('timestamp', descending: true)
-        .get()
-        .then((value) => temRoomList =
-            value.docs.map((e) => ChatRoomModel.fromJson(e.data())).toList());
-    chatRoom = temRoomList
-        .where((element) => element.id!.contains(_auth.currentUser!.uid))
-        .toList();
-    print(chatRoom);
+        .snapshots()
+        .map((snapshot) {
+      List<ChatRoomModel> temRoomList =
+          snapshot.docs.map((e) => ChatRoomModel.fromJson(e.data())).toList();
+      return temRoomList
+          .where((element) => element.id!.contains(_auth.currentUser!.uid))
+          .toList();
+    });
   }
 }

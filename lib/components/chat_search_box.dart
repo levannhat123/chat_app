@@ -1,5 +1,3 @@
-import 'package:chat_app/gen/assets.gen.dart';
-import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/resources/app_color.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +6,7 @@ class ChatSearchBox extends StatelessWidget {
 
   final TextEditingController? controller;
   final Function(String)? onChanged;
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,12 +26,12 @@ class ChatSearchBox extends StatelessWidget {
         controller: controller,
         onChanged: onChanged,
         style: const TextStyle(color: AppColor.black),
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           border: InputBorder.none,
           hintText: 'Search',
-          hintStyle: const TextStyle(color: AppColor.grey),
+          hintStyle: TextStyle(color: AppColor.grey),
           prefixIcon: Icon(Icons.search),
-          prefixIconConstraints: const BoxConstraints(minWidth: 36.0),
+          prefixIconConstraints: BoxConstraints(minWidth: 36.0),
         ),
       ),
     );

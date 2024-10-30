@@ -5,15 +5,13 @@ import 'package:chat_app/components/text__flied/text__filed.dart';
 import 'package:chat_app/components/text__flied/text_filed_pass.dart';
 import 'package:chat_app/gen/assets.gen.dart';
 import 'package:chat_app/pages/widgets/homepage.dart';
-
 import 'package:chat_app/resources/app_color.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, this.email});
   final String? email;
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -25,7 +23,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     emailController.text = widget.email ?? '';
   }
@@ -45,109 +42,101 @@ class _LoginPageState extends State<LoginPage> {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: Column(
-              children: [
-                Image.asset(
-                  Assets.img.login.path,
-                  // fit: BoxFit.cover,
-                  width: 200.0,
-                ),
-                const Text(
-                  "Login",
-                  style: TextStyle(
-                    color: AppColor.red,
-                    fontSize: 40.0,
-                    fontWeight: FontWeight.w500,
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  Image.asset(
+                    Assets.img.login.path,
+                    width: 200.0,
                   ),
-                ),
-                const SizedBox(
-                  height: 30.0,
-                ),
-                TextField_chat(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an email';
-                    } else if (!isValidEmail(value)) {
-                      return 'Please enter a valid email';
-                    } else {
+                  const Text(
+                    "Login",
+                    style: TextStyle(
+                      color: AppColor.red,
+                      fontSize: 40.0,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 30.0),
+                  TextField_chat(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an email';
+                      } else if (!isValidEmail(value)) {
+                        return 'Please enter a valid email';
+                      }
                       return null;
-                    }
-                  },
-                  controller: emailController,
-                  hintText: 'Email',
-                  prefixIcon: const Icon(
-                    Icons.email_outlined,
-                    size: 16.0,
+                    },
+                    controller: emailController,
+                    hintText: 'Email',
+                    prefixIcon: const Icon(Icons.email_outlined, size: 16.0),
                   ),
-                ),
-                const SizedBox(
-                  height: 16.0,
-                ),
-                TextFieldPass(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an password';
-                    } else if (!isStrongPassword(value)) {
-                      return 'Please enter a valid pasword';
-                    } else {
+                  const SizedBox(height: 16.0),
+                  TextFieldPass(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a password';
+                      } else if (!isStrongPassword(value)) {
+                        return 'Password must be at least 8 characters';
+                      }
                       return null;
-                    }
-                  },
-                  controller: passController,
-                  hintText: 'Password',
-                  prefixIcon: const Icon(
-                    Icons.password_outlined,
-                    size: 16.0,
+                    },
+                    controller: passController,
+                    hintText: 'Password',
+                    prefixIcon: const Icon(Icons.password_outlined, size: 16.0),
                   ),
-                ),
-                const SizedBox(
-                  height: 15.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Text(
-                          "Don't have an account? ",
-                          style: TextStyle(color: AppColor.red),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SingUpPage(),
-                            ));
-                          },
-                          child: const Text(
-                            "Sign up",
-                            style: TextStyle(color: AppColor.blue),
+                  const SizedBox(height: 15.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            "Don't have an account? ",
+                            style: TextStyle(color: AppColor.red),
                           ),
-                        ),
-                      ],
-                    ),
-                    const Text(
-                      "Forgot PassWord",
-                      style: TextStyle(color: AppColor.red),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20.0,
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    await AuthController()
-                        .login(emailController.text, passController.text);
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (context) => const HomePage(),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const SingUpPage(),
+                              ));
+                            },
+                            child: const Text(
+                              "Sign up",
+                              style: TextStyle(color: AppColor.blue),
+                            ),
+                          ),
+                        ],
                       ),
-                      (route) => false,
-                    );
-                  },
-                  child: CappElevatedButton(text: "Login"),
-                )
-              ],
+                    ],
+                  ),
+                  const SizedBox(height: 20.0),
+                  GestureDetector(
+                    onTap: () async {
+                      if (formKey.currentState!.validate()) {
+                        try {
+                          await AuthController().login(
+                            emailController.text,
+                            passController.text,
+                          );
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (context) => const HomePage(),
+                            ),
+                            (route) => false,
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Login failed: $e')),
+                          );
+                        }
+                      }
+                    },
+                    child: CappElevatedButton(text: "Login"),
+                  )
+                ],
+              ),
             ),
           ),
         ),

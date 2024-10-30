@@ -58,20 +58,6 @@ class TdAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: const Icon(Icons.edit),
         ),
       ],
-      // bottom: PreferredSize(
-      //   preferredSize: Size.fromHeight(60),
-      //   // child: TabBar(
-      //   //     controller: tabController,
-      //   //     labelStyle: Theme.of(context).textTheme.bodyLarge,
-      //   //     unselectedLabelStyle: Theme.of(context).textTheme.labelLarge,
-      //   //     indicatorColor: AppColor.grey,
-      //   //     indicatorWeight: 4,
-      //   //     tabs: const [
-      //   //       Text('Chats'),
-      //   //       // Text('Groups'),
-      //   //       // Text('Calls'),
-      //   //     ]),
-      // ),
     );
   }
 

@@ -57,6 +57,8 @@ class ChatController {
     isLoading = true;
     String chatId = uuid.v4();
     String roomId = getRoomId(targetUserId);
+    UserModel sender = getSender(currentUser!, targetUseR);
+    UserModel receiver = getReceiver(currentUser!, targetUseR);
     var newChat = ChatAppModel()
       ..id = chatId
       ..message = message
@@ -69,23 +71,25 @@ class ChatController {
       ..id = roomId
       ..lastMessage = message
       ..lastMessageTimestamp = DateTime.now().toIso8601String()
-      ..sender = currentUser
-      ..receiver = targetUseR
+      ..sender = sender
+      ..receiver = receiver
       ..timestamp = DateTime.now().toIso8601String()
       ..unReadMessNo = 0;
     try {
-      await db.collection('chats').doc(roomId).set(roomDetails.toJson());
       await db
           .collection('chats')
           .doc(roomId)
           .collection('messages')
           .doc(chatId)
           .set(newChat.toJson());
+      await db.collection('chats').doc(roomId).set(roomDetails.toJson());
     } catch (e) {
       throw Exception(e.toString());
     }
     isLoading = false;
   }
+
+  
 
   Stream<List<ChatAppModel>> getMessage(String targetUserId) {
     String roomId = getRoomId(targetUserId);

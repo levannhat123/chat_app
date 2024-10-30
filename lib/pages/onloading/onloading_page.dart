@@ -31,7 +31,7 @@ class _OnloadingPageState extends State<OnloadingPage> {
                   fontWeight: FontWeight.bold,
                   color: AppColor.red),
             ),
-            SizedBox(height: 30.0),
+            const SizedBox(height: 30.0),
             SizedBox(
               height: 240.0,
               child: PageView(

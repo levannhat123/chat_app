@@ -20,13 +20,13 @@ class SingUpPage extends StatefulWidget {
 class _SingUpPageState extends State<SingUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
-  final TextEditingController comfipassController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
 
   @override
   void dispose() {
     emailController.dispose();
     passController.dispose();
-    comfipassController.dispose();
+    nameController.dispose();
     super.dispose();
   }
 
@@ -36,10 +36,6 @@ class _SingUpPageState extends State<SingUpPage> {
 
   bool isStrongPassword(String password) {
     return password.length >= 8;
-  }
-
-  bool isConfimpass() {
-    return passController.text.trim() == comfipassController.text.trim();
   }
 
   @override
@@ -67,9 +63,9 @@ class _SingUpPageState extends State<SingUpPage> {
                   ),
                   const SizedBox(height: 30.0),
                   TextField_chat(
-                    controller: comfipassController,
+                    controller: nameController,
                     hintText: 'Name',
-                    prefixIcon: Icon(
+                    prefixIcon: const Icon(
                       Icons.person,
                       size: 16.0,
                     ),
@@ -146,7 +142,7 @@ class _SingUpPageState extends State<SingUpPage> {
                           await AuthController().createUser(
                               emailController.text,
                               passController.text,
-                              comfipassController.text);
+                              nameController.text);
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => LoginPage(
@@ -157,7 +153,8 @@ class _SingUpPageState extends State<SingUpPage> {
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(e.toString()),
+                              content:
+                                  Text(emailController.text + ' đã tồn tại '),
                             ),
                           );
                         }

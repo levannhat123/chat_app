@@ -1,11 +1,9 @@
 import 'package:chat_app/gen/assets.gen.dart';
 import 'package:chat_app/resources/app_color.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ChatAppbarPage extends StatelessWidget implements PreferredSizeWidget {
-  ChatAppbarPage({
+  const ChatAppbarPage({
     super.key,
     required this.icon,
     required this.title,
@@ -27,7 +25,7 @@ class ChatAppbarPage extends StatelessWidget implements PreferredSizeWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(
           top: MediaQuery.of(context).padding.top + 6.0, bottom: 12.0),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColor.bgColor,
       ),
       child: Row(
@@ -47,11 +45,13 @@ class ChatAppbarPage extends StatelessWidget implements PreferredSizeWidget {
                   height: 50,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
-                    child: Image.network(
-                      img!,
-                      width: 70,
-                      fit: BoxFit.cover,
-                    ),
+                    child: img != null && img!.isNotEmpty
+                        ? Image.network(
+                            img!,
+                            width: 70,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset(Assets.img.avatar.path),
                   ),
                 ),
               const SizedBox(width: 18.0),
@@ -60,12 +60,13 @@ class ChatAppbarPage extends StatelessWidget implements PreferredSizeWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(title,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 18.0, fontWeight: FontWeight.bold)),
                   if (subtitle != null &&
                       subtitle!.isNotEmpty) // Kiểm tra subtitle
                     Text(subtitle!,
-                        style: TextStyle(fontSize: 14.0, color: Colors.grey)),
+                        style: const TextStyle(
+                            fontSize: 14.0, color: Colors.grey)),
                 ],
               ),
               // SizedBox(
@@ -75,7 +76,7 @@ class ChatAppbarPage extends StatelessWidget implements PreferredSizeWidget {
           ),
           GestureDetector(
             onTap: rightPressed,
-            child: Icon(Icons.more_vert),
+            child: const Icon(Icons.more_vert),
           )
         ],
       ),

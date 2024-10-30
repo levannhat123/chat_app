@@ -69,7 +69,7 @@ class _ContactPageState extends State<ContactPage> {
               const SizedBox(height: 10),
 
               const Text("Danh sách Chats:"),
-              // Hiển thị trạng thái loading nếu isLoading = true
+             
               _authController.isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : Column(
