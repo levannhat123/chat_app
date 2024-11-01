@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage>
         title: 'ChatApp',
         leftPressed: () {
           _scaffoldKey.currentState?.openDrawer();
+          
         },
         tabController: tabController,
       ),

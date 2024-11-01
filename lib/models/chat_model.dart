@@ -5,28 +5,15 @@ class ChatAppModel {
   String? senderId;
   String? receiverId;
   String? timestamp;
-  String? readStatus;
-  String? imageUrl;
-  String? videoUrl;
-  String? audioUrl;
-  String? documentUrl;
-  List<String>? reactions;
-  List<dynamic>? replies;
 
-  ChatAppModel(
-      {this.id,
-      this.message,
-      this.senderName,
-      this.senderId,
-      this.receiverId,
-      this.timestamp,
-      this.readStatus,
-      this.imageUrl,
-      this.videoUrl,
-      this.audioUrl,
-      this.documentUrl,
-      this.reactions,
-      this.replies});
+  ChatAppModel({
+    this.id,
+    this.message,
+    this.senderName,
+    this.senderId,
+    this.receiverId,
+    this.timestamp,
+  });
 
   ChatAppModel.fromJson(Map<String, dynamic> json) {
     if (json["id"] is String) {
@@ -47,29 +34,6 @@ class ChatAppModel {
     if (json["timestamp"] is String) {
       timestamp = json["timestamp"];
     }
-    if (json["readStatus"] is String) {
-      readStatus = json["readStatus"];
-    }
-    if (json["imageUrl"] is String) {
-      imageUrl = json["imageUrl"];
-    }
-    if (json["videoUrl"] is String) {
-      videoUrl = json["videoUrl"];
-    }
-    if (json["audioUrl"] is String) {
-      audioUrl = json["audioUrl"];
-    }
-    if (json["documentUrl"] is String) {
-      documentUrl = json["documentUrl"];
-    }
-    if (json["reactions"] is List) {
-      reactions = json["reactions"] == null
-          ? null
-          : List<String>.from(json["reactions"]);
-    }
-    if (json["replies"] is List) {
-      replies = json["replies"] ?? [];
-    }
   }
 
   Map<String, dynamic> toJson() {
@@ -80,17 +44,6 @@ class ChatAppModel {
     _data["senderId"] = senderId;
     _data["receiverId"] = receiverId;
     _data["timestamp"] = timestamp;
-    _data["readStatus"] = readStatus;
-    _data["imageUrl"] = imageUrl;
-    _data["videoUrl"] = videoUrl;
-    _data["audioUrl"] = audioUrl;
-    _data["documentUrl"] = documentUrl;
-    if (reactions != null) {
-      _data["reactions"] = reactions;
-    }
-    if (replies != null) {
-      _data["replies"] = replies;
-    }
     return _data;
   }
 }
